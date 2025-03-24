@@ -1,6 +1,6 @@
 import { connectToDatabase } from '../../lib/mongodb';
-import Sale from '../../models/Sale';
-import Product from '../../models/Product';
+import Product from '../../src/models/Product';
+import Sale from '../../src/models/Sale';
 import mongoose from 'mongoose';
 
 export default async function handler(req, res) {
