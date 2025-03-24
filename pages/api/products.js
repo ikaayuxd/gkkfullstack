@@ -2,12 +2,12 @@ import { connectToDatabase } from '../../lib/mongodb';
 import Product from '../../src/models/Product';
 import mongoose from 'mongoose';
 
-#export default async function handler(req, res) {
-#  if (!mongoose.connections[0].readyState) {
-  #  await mongoose.connect(process.env.MONGODB_URI);
-#  }
+//export default async function handler(req, res) {
+//  if (!mongoose.connections[0].readyState) {
+  //  await mongoose.connect(process.env.MONGODB_URI);
+//  }
 
-  #hjh
+  //hjh
     export default async function handler(req, res) {
     // Log the incoming request method and query
     console.log(`Received ${req.method} request for /api/products with query:`, req.query);
