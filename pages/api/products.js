@@ -9,10 +9,8 @@ import mongoose from 'mongoose';
 
   //hjh
     export default async function handler(req, res) {
-    // Log the incoming request method and query
     console.log(`Received ${req.method} request for /api/products with query:`, req.query);
 
-    // Check if MongoDB is connected
     if (!mongoose.connections[0].readyState) {
         console.log('Attempting to connect to MongoDB...');
         try {
