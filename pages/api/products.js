@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 //  }
 
   //hjh
-    export default async function handler(req, res) {
+  export default async function handler(req, res) {
     console.log(`Received ${req.method} request for /api/products with query:`, req.query);
 
     // Check if MongoDB is connected
@@ -37,6 +37,14 @@ import mongoose from 'mongoose';
                 res.status(500).json({ error: 'Failed to fetch products' });
             }
             break;
+
+        // Handle other methods (POST, PUT, DELETE) similarly...
+
+        default:
+            console.warn('Method not allowed:', req.method);
+            res.status(405).json({ error: 'Method not allowed' });
+    }
+  }
 
         // Handle other methods (POST, PUT, DELETE) similarly...
 
