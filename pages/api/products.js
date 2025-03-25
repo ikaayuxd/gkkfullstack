@@ -1,14 +1,8 @@
-import { connectToDatabase } from '../../lib/mongodb';
-import Product from '../../src/models/Product';
 import mongoose from 'mongoose';
+import Product from '../../src/models/Product';
 
-//export default async function handler(req, res) {
-//  if (!mongoose.connections[0].readyState) {
-  //  await mongoose.connect(process.env.MONGODB_URI);
-//  }
-
-  //hjh
-  export default async function handler(req, res) {
+// API route handler
+export default async function handler(req, res) {
     console.log(`Received ${req.method} request for /api/products with query:`, req.query);
 
     // Check if MongoDB is connected
@@ -38,63 +32,51 @@ import mongoose from 'mongoose';
             }
             break;
 
-        // Handle other methods (POST, PUT, DELETE) similarly...
+        case 'POST':
+            try {
+                const product = new Product(req.body);
+                await product.save();
+                res.status(201).json(product);
+            } catch (error) {
+                console.error('Failed to create product:', error);
+                res.status(400).json({ error: error.message });
+            }
+            break;
+
+        case 'PUT':
+            try {
+                const { id } = req.query;
+                const product = await Product.findByIdAndUpdate(
+                    id,
+                    { ...req.body, updatedAt: Date.now() },
+                    { new: true, runValidators: true }
+                );
+                if (!product) {
+                    return res.status(404).json({ error: 'Product not found' });
+                }
+                res.status(200).json(product);
+            } catch (error) {
+                console.error('Failed to update product:', error);
+                res.status(400).json({ error: error.message });
+            }
+            break;
+
+        case 'DELETE':
+            try {
+                const { id } = req.query;
+                const product = await Product.findByIdAndDelete(id);
+                if (!product) {
+                    return res.status(404).json({ error: 'Product not found' });
+                }
+                res.status(200).json({ message: 'Product deleted successfully' });
+            } catch (error) {
+                console.error('Failed to delete product:', error);
+                res.status(400).json({ error: error.message });
+            }
+            break;
 
         default:
             console.warn('Method not allowed:', req.method);
             res.status(405).json({ error: 'Method not allowed' });
     }
-  }
-
-        // Handle other methods (POST, PUT, DELETE) similarly...
-
-        default:
-            console.warn('Method not allowed:', req.method);
-            res.status(405).json({ error: 'Method not allowed' });
-    }
-    }
-
-    case 'POST':
-      try {
-        const product = new Product(req.body);
-        await product.save();
-        res.status(201).json(product);
-      } catch (error) {
-        res.status(400).json({ error: error.message });
-      }
-      break;
-
-    case 'PUT':
-      try {
-        const { id } = req.query;
-        const product = await Product.findByIdAndUpdate(
-          id,
-          { ...req.body, updatedAt: Date.now() },
-          { new: true, runValidators: true }
-        );
-        if (!product) {
-          return res.status(404).json({ error: 'Product not found' });
-        }
-        res.status(200).json(product);
-      } catch (error) {
-        res.status(400).json({ error: error.message });
-      }
-      break;
-
-    case 'DELETE':
-      try {
-        const { id } = req.query;
-        const product = await Product.findByIdAndDelete(id);
-        if (!product) {
-          return res.status(404).json({ error: 'Product not found' });
-        }
-        res.status(200).json({ message: 'Product deleted successfully' });
-      } catch (error) {
-        res.status(400).json({ error: error.message });
-      }
-      break;
-
-    default:
-      res.status(405).json({ error: 'Method not allowed' });
-  }
 }
