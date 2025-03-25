@@ -1,4 +1,3 @@
-import { connectToDatabase } from '../../lib/mongodb';
 import Product from '../../src/models/Product';
 import Sale from '../../src/models/Sale';
 import mongoose from 'mongoose';
