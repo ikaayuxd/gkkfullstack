@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+
+import { connectDB } from '../../lib/mongoose';
 import Product from '../../src/models/Product';
 
 // API route handler
