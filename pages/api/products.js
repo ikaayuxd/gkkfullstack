@@ -1,23 +1,10 @@
 import { connectDB } from '../../lib/mongoose';
 import Product from '../../src/models/Product';
-import mongoose from 'mongoose';
 
-// API route handler
 export default async function handler(req, res) {
     try {
-        // Log request details
-        console.log('API Request:', {
-            method: req.method,
-            query: req.query,
-            path: req.url
-        });
-
         // Connect to MongoDB
-        const conn = await connectDB();
-        console.log('MongoDB Connected:', {
-            readyState: mongoose.connection.readyState,
-            name: mongoose.connection.name
-        });
+        await connectDB();
 
         switch (req.method) {
             case 'GET':
