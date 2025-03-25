@@ -1,37 +1,38 @@
 
 import { connectDB } from '../../lib/mongoose';
 import Product from '../../src/models/Product';
+import mongoose from 'mongoose';
 
 // API route handler
 export default async function handler(req, res) {
-    console.log(`Received ${req.method} request for /api/products with query:`, req.query);
+    try {
+        // Log request details
+        console.log('API Request:', {
+            method: req.method,
+            query: req.query,
+            path: req.url
+        });
 
-    // Check if MongoDB is connected
-    if (!mongoose.connections[0].readyState) {
-        console.log('Attempting to connect to MongoDB...');
-        try {
-            await mongoose.connect(process.env.MONGODB_URI);
-            console.log('MongoDB connected successfully');
-        } catch (error) {
-            console.error('MongoDB connection error:', error);
-            return res.status(500).json({ error: 'Database connection failed' });
+        // Connect to MongoDB
+        const conn = await connectDB();
+        console.log('MongoDB Connected:', {
+            readyState: mongoose.connection.readyState,
+            name: mongoose.connection.name
+        });
+
+        switch (req.method) {
+            case 'GET':
+                const products = await Product.find().sort({ name: 1 });
+                return res.status(200).json(products);
+
+            default:
+                return res.status(405).json({ error: 'Method not allowed' });
         }
+    } catch (error) {
+        console.error('API Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
-
-    switch (req.method) {
-        case 'GET':
-            try {
-                const { category } = req.query;
-                const query = category ? { category } : {};
-                console.log('Fetching products with query:', query);
-                const products = await Product.find(query).sort({ name: 1 });
-                console.log('Fetched products:', products);
-                res.status(200).json(products);
-            } catch (error) {
-                console.error('Failed to fetch products:', error);
-                res.status(500).json({ error: 'Failed to fetch products' });
-            }
-            break;
+}
 
         case 'POST':
             try {
