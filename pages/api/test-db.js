@@ -3,43 +3,29 @@ import mongoose from 'mongoose';
 
 export default async function handler(req, res) {
     try {
-        // 1. Log environment check
-        console.log('Environment check:', {
-            hasMongoURI: !!process.env.MONGODB_URI,
-            mongoURILength: process.env.MONGODB_URI?.length,
-            nodeEnv: process.env.NODE_ENV
-        });
-
-        // 2. Attempt connection
+        // 1. Log connection attempt
         console.log('Attempting database connection...');
+        
+        // 2. Connect to database
         const conn = await connectDB();
         
         // 3. Get connection status
         const status = {
-            isConnected: !!mongoose.connection.readyState,
-            readyState: mongoose.connection.readyState,
+            isConnected: mongoose.connection.readyState === 1,
             database: mongoose.connection.name,
-            host: mongoose.connection.host,
-            models: Object.keys(mongoose.models)
+            host: mongoose.connection.host
         };
 
-        // 4. Return success with details
+        // 4. Return success
         return res.status(200).json({
             success: true,
-            message: 'Database connection test',
+            message: 'Database connected successfully',
             status: status
         });
 
     } catch (error) {
-        // Log detailed error
-        console.error('Connection test error:', {
-            name: error.name,
-            message: error.message,
-            code: error.code,
-            stack: error.stack
-        });
-
-        // Return error details
+        // Log and return error
+        console.error('Connection failed:', error);
         return res.status(500).json({
             success: false,
             error: error.message,
