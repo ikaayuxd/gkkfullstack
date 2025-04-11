@@ -1,6 +1,6 @@
 const { MongoClient } = require('mongodb');
 
-const MONGODB_URI = mongodb+srv://aayu:909090gg@aayu.vgpfl.mongodb.net/?retryWrites=true&w=majority&appName=aayu
+const MONGODB_URI = "mongodb+srv://aayu:909090gg@aayu.vgpfl.mongodb.net/?retryWrites=true&w=majority&appName=aayu"
 const sampleProducts = [
   {
     name: 'Wheat Seeds Premium',
